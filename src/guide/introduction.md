@@ -280,3 +280,383 @@ Different developers have different learning styles. Feel free to pick a learnin
     <p class="next-steps-caption">Explore examples of core features and common UI tasks.</p>
   </a>
 </div>
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "buttercms-angular-nine": {
+      "root": "",
+      "sourceRoot": "src",
+      "projectType": "application",
+      "prefix": "app",
+      "schematics": {
+        "@schematics/angular:component": {
+          "styleext": "scss"
+        }
+      },
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/buttercms-angular-nine",
+            "index": "src/index.html",
+            "main": "src/main.ts",
+            "polyfills": "src/polyfills.ts",
+            "tsConfig": "src/tsconfig.app.json",
+            "assets": [
+              "src/favicon.ico",
+              "src/assets"
+            ],
+            "styles": [
+              "src/styles.scss"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "buttercms-angular-nine:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "buttercms-angular-nine:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "buttercms-angular-nine:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "src/test.ts",
+            "polyfills": "src/polyfills.ts",
+            "tsConfig": "src/tsconfig.spec.json",
+            "karmaConfig": "src/karma.conf.js",
+            "styles": [
+              "src/styles.scss"
+            ],
+            "scripts": [],
+            "assets": [
+              "src/favicon.ico",
+              "src/assets"
+            ]
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "src/tsconfig.app.json",
+              "src/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    },
+    "buttercms-angular-nine-e2e": {
+      "root": "e2e/",
+      "projectType": "application",
+      "prefix": "",
+      "architect": {
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "e2e/protractor.conf.js",
+            "devServerTarget": "buttercms-angular-nine:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "buttercms-angular-nine:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": "e2e/tsconfig.e2e.json",
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "defaultProject": "buttercms-angular-nine"
+}
+import {Component, OnInit} from '@angular/core';
+
+import {butterService} from '../services';
+
+@Component({
+    selector: 'app-hello-you',
+    template: `
+        <h1>Hello-You</h1>
+        <p>
+            Headline:
+            {{headlines?.data?.homepage_headline}}
+        </p>
+        <p>
+            Sample Post:
+            {{posts? posts.data[0]?.url : 'no posts'}}
+        </p>
+    `,
+    styles: []
+})
+export class HelloYouComponent implements OnInit {
+
+    posts;
+    headlines;
+
+    constructor() {
+    }
+
+    ngOnInit() {
+        this.fetchPosts();
+        this.fetchHeadline();
+    }
+
+    private fetchHeadline() {
+        butterService.content.retrieve(['homepage_headline'])
+            .then((res) => {
+                console.log('Headline from ButterCMS');
+                console.log(res);
+                this.headlines = res.data;
+            });
+    }
+
+    private fetchPosts() {
+        butterService.post.list({
+                page: 1,
+                page_size: 10
+            })
+            .then((res) => {
+                console.log('Content from ButterCMS');
+                console.log(res);
+                this.posts = res.data;
+            });
+    }
+}
+import {Component, OnInit} from '@angular/core';
+
+import {butterService} from '../services';
+
+@Component({
+    selector: 'app-hello-you',
+    template: `
+        <h1>Hello-You</h1>
+        <p>
+            Headline:
+            {{headlines?.data?.homepage_headline}}
+        </p>
+        <p>
+            Sample Post:
+            {{posts? posts.data[0]?.url : 'no posts'}}
+        </p>
+    `,
+    styles: []
+})
+export class HelloYouComponent implements OnInit {
+
+    posts;
+    headlines;
+
+    constructor() {
+    }
+
+    ngOnInit() {
+        this.fetchPosts();
+        this.fetchHeadline();
+    }
+
+    private fetchHeadline() {
+        butterService.content.retrieve(['homepage_headline'])
+            .then((res) => {
+                console.log('Headline from ButterCMS');
+                console.log(res);
+                this.headlines = res.data;
+            });
+    }
+
+    private fetchPosts() {
+        butterService.post.list({
+                page: 1,
+                page_size: 10
+            })
+            .then((res) => {
+                console.log('Content from ButterCMS');
+                console.log(res);
+                this.posts = res.data;
+            });
+    }
+}
+import {Component, OnInit} from '@angular/core';
+
+import {butterService} from '../services';
+
+@Component({
+    selector: 'app-hello-you',
+    template: `
+        <h1>Hello-You</h1>
+        <p>
+            Headline:
+            {{headlines?.data?.homepage_headline}}
+        </p>
+        <p>
+            Sample Post:
+            {{posts? posts.data[0]?.url : 'no posts'}}
+        </p>
+    `,
+    styles: []
+})
+export class HelloYouComponent implements OnInit {
+
+    posts;
+    headlines;
+
+    constructor() {
+    }
+
+    ngOnInit() {
+        this.fetchPosts();
+        this.fetchHeadline();
+    }
+
+    private fetchHeadline() {
+        butterService.content.retrieve(['homepage_headline'])
+            .then((res) => {
+                console.log('Headline from ButterCMS');
+                console.log(res);
+                this.headlines = res.data;
+            });
+    }
+
+    private fetchPosts() {
+        butterService.post.list({
+                page: 1,
+                page_size: 10
+            })
+            .then((res) => {
+                console.log('Content from ButterCMS');
+                console.log(res);
+                this.posts = res.data;
+            });
+    }
+}
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
+import {FaqComponent} from './faq/faq.component';
+import {HomeComponent} from './home/home.component';
+import {FeedComponent} from './feed/feed.component';
+import {HelloYouComponent} from './hello-you/hello-you.component';
+import {BlogPostListingComponent} from './blog-post-listing/blog-post-listing.component';
+import {CustomerListingComponent} from './customer-listing/customer-listing.component';
+import {CustomerDetailsComponent} from './customer-details/customer-details.component';
+import {BlogPostDetailsComponent} from './blog-post-details/blog-post-details.component';
+
+const appRoutes: Routes = [
+    {path: 'customer', component: CustomerListingComponent},
+    {path: 'customer/:slug', component: CustomerDetailsComponent},
+    {path: 'faq', component: FaqComponent},
+    {path: 'blog', component: BlogPostListingComponent},
+    {path: 'blog/:slug', component: BlogPostDetailsComponent},
+    {path: 'rss', component: FeedComponent},
+    {path: 'hello-you', component: HelloYouComponent},
+    {path: 'home', component: HomeComponent},
+    {path: '**', redirectTo: 'home'}
+];
+
+@NgModule({
+    imports: [RouterModule.forRoot(appRoutes)],
+    exports: [RouterModule]
+})
+export class AppRoutingModule {
+}
+<mat-card>
+    <mat-card-title class="page-title">Customers</mat-card-title>
+    <mat-divider></mat-divider>
+    <mat-card-content class="page-body">
+        <mat-card *ngFor="let page of pages">
+            <mat-card-title>
+                <div class="container">
+                    <a [routerLink]="[page.slug]">
+                        <div fxLayout="row" fxLayout.xs="column"
+                             fxFlex class="content">
+                            <div class="blocks">
+                                <img src="{{page.fields.customer_logo}}" alt="{{page.fields.seotitle}}" height="64"
+                                     width="64"/>
+                            </div>
+                            <div class="blocks">
+                                {{page.fields.headline}}
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </mat-card-title>
+        </mat-card>
+    </mat-card-content>
+    <mat-divider></mat-divider>
+    <mat-card-footer>
+        <div class="page-footer">
+            <mat-icon>whatshot</mat-icon>
+        </div>
+    </mat-card-footer>
+</mat-card>
+import {Component, OnInit} from '@angular/core';
+import {butterService} from '../services';
+
+@Component({
+    selector: 'app-customer',
+    templateUrl: './customer-listing.component.html',
+    styleUrls: ['./customer-listing.component.scss']
+})
+export class CustomerListingComponent implements OnInit {
+
+    public pages: any[];
+
+    constructor() {
+    }
+
+    ngOnInit() {
+        butterService.page.list('customer_case_study')
+            .then((res) => {
+                this.pages = res.data.data;
+            });
+    }
+}
+
